@@ -1,0 +1,17 @@
+1.在配置文件my.cnf中指定端口，socket文件:
+  basedir = /usr/local/mysql
+  datadir = /usr/local/mysql/data1
+  port = 3307
+  socket = /tmp/mysqld-1.sock
+
+2.init server user
+ scripts/mysql_install_db  --user=mysql --datadir=/usr/local/mysql/data1
+
+3.启动server:
+bin/mysqld_safe --defaults-file=/usr/local/mysql/etc/my1.cnf --user=mysql
+
+4.首次登录：
+bin/mysql -S /tmp/mysqld-1.sock
+
+5.授权：
+grant all privileges on *.* to 'root'@'%';

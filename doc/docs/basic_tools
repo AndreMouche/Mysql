@@ -1,0 +1,6 @@
+
+1. analyze Table
+在非高峰期，对table进行analyze Table,能使得优化器和索引更好地工作
+
+2.explain select * from t
+
