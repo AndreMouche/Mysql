@@ -1,5 +1,5 @@
 
-http://dev.mysql.com/doc/refman/5.6/en/replication-configuration.html
+# http://dev.mysql.com/doc/refman/5.6/en/replication-configuration.html
 
 主从集群搭建（http://dev.mysql.com/doc/refman/5.6/en/replication-howto.html）：
 1.根据官网安装教程编译安装mysql
@@ -71,4 +71,9 @@ change master to Master_host='192.168.193.87',
       Master_log_pos=564;
 start slave
 
-Restart slave
+Restart slave 
+
+
+第5，6，7 可简化为：
+mysqldump --single-transaction  --master-data --user=root --host=localhost  one -p > a.log 
+即在mysqldump时带--master-data参数，可自动生成第7步的语句到sql里
