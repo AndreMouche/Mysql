@@ -3,7 +3,10 @@
 
 主从集群搭建（http://dev.mysql.com/doc/refman/5.6/en/replication-howto.html）：
 1.根据官网安装教程编译安装mysql
-2.修改主配置项：
+2.修改主配置项： 
+
+```
+
 gtid_mode=ON
  #open gtid option
 log-bin=mysql-bin
@@ -12,6 +15,8 @@ enforce-gtid-consistency
 
 log-slave-updates
 
+# 这样才能让内网访问到该端口，否则数据库只能本地访问
+bind_address = 0.0.0.0 
 #binlog-do-db=ngmdb
  #若指定该参数，则只复制该数据库
 expire-logs-days=7
@@ -27,8 +32,11 @@ sync_binlog=1
 #为保证innodb事物操作的强一致性
 server-id=1
  #若不用该参数，默认为0，即拒绝所有来自slave的请求
+```
 
 3.配置slave:
+
+```
 gtid_mode=ON
 
 enforce-gtid-consistency
@@ -38,13 +46,19 @@ log-bin=mysql-bin
 log-slave-updates
 
 server-id=2
+```
 
 
 4.在Master上为复制组创建用户
+
+```
 create user 'repl'@'192.168.193.90' identified by 'slavepass';
 grant replication slave on *.* to 'repl'@'192.168.193.90';
+```
 
 5.获取Master上日志坐标
+
+```
 flush table with read lock;
 show master status;
 +---------------+----------+--------------+------------------+------------------------------------------+
@@ -58,10 +72,14 @@ show master status;
 +---------------+----------+--------------+------------------+------------------------------------------+
 
 1 row in set (0.00 sec)
+```
 
 
 6.将Master上已有的数据同步到slave
+
 7.在Slave上配置Master信息
+
+```
 stop slave
 change master to Master_host='192.168.193.87',
       Master_User='repl',
@@ -72,8 +90,13 @@ change master to Master_host='192.168.193.87',
 start slave
 
 Restart slave 
+```
 
 
 第5，6，7 可简化为：
+
+```
 mysqldump --single-transaction  --master-data --user=root --host=localhost  one -p > a.log 
+```
+
 即在mysqldump时带--master-data参数，可自动生成第7步的语句到sql里
